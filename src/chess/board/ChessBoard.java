@@ -1,15 +1,17 @@
-package chess;
+package chess.board;
+
+import chess.Constant;
 
 // 电脑默认黑子
 public class ChessBoard implements Constant {
     // 棋盘长宽
-    final private int rows, cols;
+    private int rows, cols;
     // 棋盘
-    final private byte[][] board;
+    private byte[][] board;
     // 棋局的评估值
     private int evaluation = -1;
 
-    ChessBoard(int r, int c) {
+    public ChessBoard(int r, int c) {
         this.rows = r;
         this.cols = c;
         this.board = new byte[rows][cols];
@@ -119,20 +121,26 @@ public class ChessBoard implements Constant {
 
             // 左上到右下
             for (int k = -leng; k <= leng; k++)
-                if (i + k < 0 || j + k < 0 || i + k > this.rows || j + k > this.cols)
+                if (i + k < 0 || j + k < 0 || i + k >= this.rows || j + k >= this.cols)
                     buffer[leng + k] = FORBIDDEN;
                 else buffer[leng + k] = this.board[i + k][j + k];
             res += this.analysisLine(buffer);
 
             // 右上到左下
             for (int k = -leng; k <= leng; k++)
-                if (i - k < 0 || j + k < 0 || i - k > this.rows || j + k > this.cols)
+                if (i - k < 0 || j + k < 0 || i - k >= this.rows || j + k >= this.cols)
                     buffer[leng + k] = FORBIDDEN;
                 else buffer[leng + k] = this.board[i - k][j + k];
             res += this.analysisLine(buffer);
         }
         return res;
     }
+
+    /**
+     * 危险
+     * @return 指向棋盘的引用
+     */
+    public byte[][] getBoard() { return this.board; }
 
     public static void main(String[] args) {
         ChessBoard a = new ChessBoard(15, 15);

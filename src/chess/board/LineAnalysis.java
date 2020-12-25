@@ -1,4 +1,6 @@
-package chess;
+package chess.board;
+
+import chess.Constant;
 
 /**
  * 这个类有很大的提升空间！
@@ -191,7 +193,7 @@ public class LineAnalysis implements Constant {
         i++; j--;
 
         if (j - i + 1 <= 4) return 0;
-        else return 300000 / 5;
+        else return 500000 / 5;
     }
 
     public static void main(String[] args) {

@@ -3,6 +3,8 @@ package chess;
 public interface Constant {
     public enum NodeType { MIN, MAX };
 
+    final public int expansionDep = 1; // 展开深度
+
     final public byte BLANK = 0; // 没有落子
     final public byte WHITE = 1; // 白子
     final public byte BLACK = 2; // 黑子，机器人
@@ -15,7 +17,7 @@ public interface Constant {
      * └┴┘
      * ⬤⃝
      */
-    final public char BLACK_CHESS = '■';
+    final public char BLACK_CHESS = '■'; // ■
     final public char WHITE_CHESS = '×';
     final public char TOP_LEFT = '┌';
     final public char TOP_NORMAL = '┬';
