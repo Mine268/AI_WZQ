@@ -44,8 +44,7 @@ public class MMNode implements Constant {
      * @param stepped 表示下完棋方的棋色
      */
     private void expand(int depth, byte toStep, byte stepped) {
-        if (depth == 0) return;
-        else {
+        if (depth > 0) {
             byte[][] tmpB = this.myBoard.getBoard();
             for (int i = 0; i < tmpB.length; i++)
                 for (int j = 0; j < tmpB[0].length; j++)
