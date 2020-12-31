@@ -1,6 +1,7 @@
 package chess.analysis;
 
 import chess.Constant;
+import chess.NaiveBoardEvaluation;
 import chess.board.ChessBoard;
 import java.util.ArrayList;
 
@@ -15,6 +16,8 @@ public class MMNode implements Constant {
     private MMNode parent;
     // Minmax棋局上的子节点数组
     private ArrayList<MMNode> subNodes;
+    // 评估类
+    private final BoardEvaluation evaluator = new NaiveBoardEvaluation();
 
     /**
      * 构造函数
@@ -82,7 +85,7 @@ public class MMNode implements Constant {
      */
     private void getEval() {
         if (subNodes.isEmpty())
-            this.evaluation = this.myBoard.getEvaluation();
+            this.evaluation = evaluator.getEvaluation(this.myBoard.getBoard());
         else {
             if (nodeType == NodeType.MAX) {
                 int maxVal = Integer.MIN_VALUE;

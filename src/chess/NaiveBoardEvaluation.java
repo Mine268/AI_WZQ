@@ -1,37 +1,82 @@
-package chess.board;
+package chess;
 
-import chess.Constant;
+import chess.analysis.BoardEvaluation;
 
 /**
- * 这个类有很大的提升空间！
- * @author mine268
+ * 最蠢的判断方法
  */
-public class LineAnalysis implements Constant {
+public class NaiveBoardEvaluation implements BoardEvaluation, Constant {
+    @Override
+    public int getEvaluation(byte[][] board) {
+        int res = 0;
+        for (int i = 0; i < board.length; i++)
+            for (int j = 0; j < board[0].length; j++)
+                res += nodeEvaluation(board, i, j);
+        return res;
+    }
 
-    /**
-     * 不可实例化
-     */
-    private LineAnalysis() {}
+    private static int nodeEvaluation(byte[][] board, int i, int j) {
+        int res = 0;
+        int rows = board.length, cols = board[0].length;
+        if (board[i][j] == BLANK)
+            return res;
+        else {
+            final int leng = 4;
+            int flag = board[i][j] == BLACK ? 1 : -1;
+            byte[] buffer = new byte[(leng << 1) + 1];
 
-    /**
-     * 根据输入的行进行判断估值
-     * @param line 行数据
-     * @param ME 代表我方
-     * @param OP 代表对方
-     * @return 返回估值
-     */
+            // 竖直
+            for (int k = -leng; k <= leng; k++)
+                if (i + k < 0 || i + k >= rows) buffer[leng + k] = FORBIDDEN;
+                else buffer[leng + k] = board[i + k][j];
+            res += analysisLine(buffer);
+
+            // 水平
+            for (int k = -leng; k <= leng; k++)
+                if (j + k < 0 || j + k >= cols) buffer[leng + k] = FORBIDDEN;
+                else buffer[leng + k] = board[i][j + k];
+            res += analysisLine(buffer);
+
+            // 左上到右下
+            for (int k = -leng; k <= leng; k++)
+                if (i + k < 0 || j + k < 0 || i + k >= rows || j + k >= cols)
+                    buffer[leng + k] = FORBIDDEN;
+                else buffer[leng + k] = board[i + k][j + k];
+            res += analysisLine(buffer);
+
+            // 右上到左下
+            for (int k = -leng; k <= leng; k++)
+                if (i - k < 0 || j + k < 0 || i - k >= rows || j + k >= cols)
+                    buffer[leng + k] = FORBIDDEN;
+                else buffer[leng + k] = board[i - k][j + k];
+            res += analysisLine(buffer);
+        }
+        return res;
+    }
+
+    private static int analysisLine(byte[] line) {
+        int mark = 1;
+        byte ME = BLACK, OP = WHITE;
+        if (line[line.length >> 1] == WHITE) {
+            ME = WHITE;
+            OP = BLACK;
+            mark = -1;
+        }
+        return lineAnalysis(line, ME, OP) * mark;
+    }
+
     public static int lineAnalysis(byte[] line, byte ME, byte OP) {
         for (int i = 0; i < line.length; i++)
             if (line[i] == FORBIDDEN)
                 line[i] = OP;
 
-        return LineAnalysis.fiveConn(line, ME, OP)
-                + LineAnalysis.fourLive(line, ME, OP)
-                + LineAnalysis.fourDeath(line, ME, OP)
-                + LineAnalysis.threeLive(line, ME, OP)
-                + LineAnalysis.threeDeath(line, ME, OP)
-                + LineAnalysis.twoLive(line, ME, OP)
-                + LineAnalysis.twoDeath(line, ME, OP);
+        return fiveConn(line, ME, OP)
+                + fourLive(line, ME, OP)
+                + fourDeath(line, ME, OP)
+                + threeLive(line, ME, OP)
+                + threeDeath(line, ME, OP)
+                + twoLive(line, ME, OP)
+                + twoDeath(line, ME, OP);
     }
 
     // 眠二
@@ -155,7 +200,7 @@ public class LineAnalysis implements Constant {
         int res = 0;
         if (j - i + 1 == 4 // BBBB_
                 && (line[i - 1] == OP && line[j + 1] == BLANK || line[i - 1] == BLANK && line[j + 1] == OP))
-                res += 3000 / 4;
+            res += 3000 / 4;
         else if (j - i + 1 == 3) {
             int submid = i + 1; // = j - 1
             if (line[submid + 2] == BLANK && line[submid + 3] == ME // BBB_B
@@ -194,11 +239,5 @@ public class LineAnalysis implements Constant {
 
         if (j - i + 1 <= 4) return 0;
         else return 500000 / 5;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(LineAnalysis.lineAnalysis(
-                new byte[]{BLANK, BLANK, BLANK, BLANK, BLACK, BLANK, BLACK, WHITE, BLANK},
-                BLACK, WHITE));
     }
 }

@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        ChessBoard cb = new ChessBoard(15, 15);
+        ChessBoard cb = new ChessBoard(19, 19);
         Scanner r = new Scanner(System.in);
 
         while (true) {
