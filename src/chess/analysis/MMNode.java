@@ -12,8 +12,6 @@ public class MMNode implements Constant {
     private NodeType nodeType;
     // 这个节点对应的棋局
     private ChessBoard myBoard;
-    // 父节点
-    private MMNode parent;
     // Minmax棋局上的子节点数组
     private ArrayList<MMNode> subNodes;
     // 评估类
@@ -50,13 +48,19 @@ public class MMNode implements Constant {
         if (depth > 0) {
             byte[][] tmpB = this.myBoard.getBoard();
             for (int i = 0; i < tmpB.length; i++)
-                for (int j = 0; j < tmpB[0].length; j++)
-                    if (tmpB[i][j] == BLANK) {
-                        MMNode tmp = new MMNode(this.myBoard.cloneBoard().chessPlay(i, j, toStep),
+                for (int j = 0; j < tmpB[0].length; j++) {
+                    int m = (i + (tmpB.length >> 1)) % tmpB.length, n = (j + (tmpB[0].length >> 1)) % tmpB[0].length;
+                    if (tmpB[m][n] == BLANK) {
+//                        System.out.printf("(%d,%d),", (i + (tmpB.length >> 1)) % tmpB.length, (j + (tmpB[0].length >> 1)) % tmpB[0].length);
+                        MMNode tmp = new MMNode(
+                                this.myBoard.cloneBoard().chessPlay(m, n, toStep),
                                 this.nodeType == NodeType.MAX ? NodeType.MIN : NodeType.MAX);
                         tmp.expand(depth - 1, stepped, toStep);
                         this.subNodes.add(tmp);
+
                     }
+                }
+//            System.out.println();
         }
     }
 
@@ -73,11 +77,14 @@ public class MMNode implements Constant {
      * @return 棋局
      */
     public ChessBoard getNextStep() {
+        ChessBoard res = null;
         this.analysis();
         for (var x : this.subNodes)
             if (x.evaluation == this.evaluation)
-                return x.myBoard;
-        return null;
+                res = x.myBoard;
+            else
+                x = null;
+        return res;
     }
 
     /**

@@ -3,7 +3,7 @@ package chess;
 public interface Constant {
     public enum NodeType { MIN, MAX };
 
-    final public int expansionDep = 2; // 展开深度
+    final public int expansionDep = 4; // 展开深度
 
     final public byte BLANK = 0; // 没有落子
     final public byte WHITE = 1; // 白子

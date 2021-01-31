@@ -1,5 +1,6 @@
 import chess.Constant;
 import chess.analysis.MMNode;
+import chess.analysis.MMNode_2;
 import chess.analysis.WinnerJudge;
 import chess.board.ChessBoard;
 import java.util.Scanner;
@@ -16,7 +17,7 @@ public class Main {
 
             cb.printBoard();
 
-            cb = new MMNode(cb, Constant.NodeType.MAX).getNextStep();
+            cb = new MMNode_2(cb, Constant.NodeType.MAX, null).getNextStep();
 
             System.out.println("---");
             cb.printBoard();

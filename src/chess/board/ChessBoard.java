@@ -66,6 +66,28 @@ public class ChessBoard implements Constant {
         }
     }
 
+
+    /**
+     * 判断周围2格内是否为空
+     * @param x x
+     * @param y y
+     * @param r 半径
+     * @return 是否为空
+     */
+    public boolean judgeRange(int x, int y, int r) {
+        for (int t = -r; t <= r; t++)
+            if (legalPos(x + t, y - r) && this.board[x + t][y - r] != BLANK ||
+                    legalPos(x + t, y + r) && this.board[x + t][y + r] != BLANK ||
+                    legalPos(x - r,y + t) && this.board[x - r][y + t] != BLANK ||
+                    legalPos(x + r,y + t) && this.board[x + r][y + t] != BLANK)
+                return true;
+        return false;
+    }
+
+    private boolean legalPos(int x, int y) {
+        return x >= 0 && y >= 0 && x < this.board.length && y < this.board[0].length;
+    }
+
     /**
      * 危险
      * @return 指向棋盘的引用
